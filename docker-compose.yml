@@ -1,0 +1,17 @@
+version: '2'
+services:
+  lighthouse-reporter:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lighthouse-reporter
+    env_file:
+      - .env
+    networks:
+      - network
+    ports:
+      - '8080:80'
+networks:
+  network:
+    driver: bridge
