@@ -21,6 +21,11 @@ module.exports = {
     },
     node: {
         fs: "empty",
+        child_process: 'empty',
         process: false,
+        console: true,
+        net: 'empty',
+        tls: 'empty',
+        module: 'empty',
     },
 };
