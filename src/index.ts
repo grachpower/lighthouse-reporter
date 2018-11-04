@@ -6,8 +6,8 @@ import * as chromeLauncher from 'chrome-launcher';
 import { TelegaApi } from "./telegram-api/telegram-api";
 import { RootObject } from './page-data.interface';
 
-const botToken = process.env.BOT_TOKEN;
-const chatId = process.env.CHAT_ID;
+const botToken = process.env.BOT_TOKEN || '703115978:AAHWLBCYosX2CpFqtrMhTFiwgru2ZEFDEGM';
+const chatId = process.env.CHAT_ID || '-287003245';
 
 if (!botToken) {
     throw new Error('Bot token is not defined');
