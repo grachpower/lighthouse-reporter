@@ -18,8 +18,8 @@ export class TelegaApi {
         });
     }
 
-    public sendFielToChat(file): Observable<void> {
-            return Http.post(`${this.baseApi}/sendDocument`, file, {
+    public sendFileToChat(file): Observable<void> {
+            return Http.post(`${this.baseApi}sendDocument`, file, {
                 chat_id: this.chatId,
             })
     }

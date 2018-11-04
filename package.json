@@ -19,6 +19,7 @@
     "ts-loader": "^5.2.0"
   },
   "scripts": {
+    "lighthouse": "lighthouse",
     "rimraf": "rimraf",
     "clean:dist": "npm run rimraf -- dist",
     "build": "npm run clean:dist && webpack --config webpack.config.js",

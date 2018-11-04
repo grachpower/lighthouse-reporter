@@ -1,8 +1,10 @@
+import { timer } from "rxjs";
+import { mapTo } from "rxjs/operators";
+import * as lighthouse from 'lighthouse';
+import * as chromeLauncher from 'chrome-launcher'; 
+
 import { TelegaApi } from "./telegram-api/telegram-api";
-const lighthouse = require('lighthouse');
-const chromeLauncher = require('chrome-launcher');
-const fs = require('fs');
-const path = require('path');
+import { RootObject } from './page-data.interface';
 
 const botToken = process.env.BOT_TOKEN || '677568548:AAGeMPyjKQoR7b2rNWW89tXMecUD7CNlMDg';
 const chatId = process.env.CHAT_ID || '160294069';
@@ -17,8 +19,7 @@ if (!chatId) {
 
 const telegaApi = new TelegaApi(chatId, botToken);
 
-
-function launchChromeAndRunLighthouse(url, opts, config = null) {
+function launchChromeAndRunLighthouse(url, opts, config = null): Promise<RootObject> {
     return chromeLauncher.launch({chromeFlags: opts.chromeFlags}).then(chrome => {
         opts.port = chrome.port;
         return lighthouse(url, opts, config).then(results => {
@@ -32,34 +33,47 @@ function launchChromeAndRunLighthouse(url, opts, config = null) {
 }
 
 const opts = {
-    chromeFlags: ['--show-paint-rects'],
-    output: 'html',
-
+    chromeFlags: ['--show-paint-rects', '--headless', '--disable-gpu'],
 };
 
-const url = 'https://www.clouty.ru';
-// Usage:
-launchChromeAndRunLighthouse(url, opts).then(results => {
-    // Use results!
-    // console.log(results);
-    const filename = url
-        .replace(/\//gi, '')
-        .replace(/\:/gi, '')
-        .replace(/\./gi, '');
+const urls = [
+    'https://www.clouty.ru/',
+    'https://www.clouty.ru/trends',
+    'https://www.clouty.ru/shop/women',
+    'https://www.clouty.ru/product-collections',
+    'https://www.clouty.ru/sales',
+    'https://www.clouty.ru/looks',
+    'https://www.clouty.ru/partners',
+    'https://www.clouty.ru/community',
+];
 
-    fs.writeFile(path.join(__dirname, `../reports/${filename}.html`), JSON.stringify(results), 'utf8', (err) => {
-        if (err) {
-            console.log('An error accured: ', err);
-        }
-        console.log('file ready');
+function reportPage(url): Promise<string> {
+    return launchChromeAndRunLighthouse(url, opts)
+        .then((results: RootObject) => {
+            const text = `
+                Page: ${results.requestedUrl} \r\n
+                - performance: ${results.categories.performance.score * 100}%
+                - pwa: ${results.categories.pwa.score * 100}%
+                - accessibility: ${results.categories.accessibility.score * 100}%
+                - seo: ${results.categories.seo.score * 100}%
+                - best-practice: ${results.categories['best-practices'].score * 100}%
+            `;
 
-        fs.readFile(path.join(__dirname, `../reports/${filename}.html`), (err, data) => {
-            if (err) {
-                console.log('An error accured: ', err);
-            }
-
-            telegaApi.sendFielToChat(data)
-                .subscribe(() => console.log('message sent'));
+            return text;
         });
-    });
-});
+}
+
+function sendReport(reportText: string): void {
+    telegaApi.sendMessageToChat(reportText)
+        .subscribe(() => console.log('report was sent'));
+}
+
+timer(0, 60e3 * 60 * 12)
+    .pipe(
+        mapTo(urls),
+    )
+    .subscribe((urls: string[]) => urls.forEach((url: string) => {
+        reportPage(url)
+            .then(report => console.log(report))
+            // .then((report: string) => sendReport(report));
+        }));
