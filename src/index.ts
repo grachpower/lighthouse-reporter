@@ -6,8 +6,8 @@ import * as chromeLauncher from 'chrome-launcher';
 import { TelegaApi } from "./telegram-api/telegram-api";
 import { RootObject } from './page-data.interface';
 
-const botToken = process.env.BOT_TOKEN || '677568548:AAGeMPyjKQoR7b2rNWW89tXMecUD7CNlMDg';
-const chatId = process.env.CHAT_ID || '160294069';
+const botToken = process.env.BOT_TOKEN || '703115978:AAHWLBCYosX2CpFqtrMhTFiwgru2ZEFDEGM';
+const chatId = process.env.CHAT_ID || '-287003245';
 
 if (!botToken) {
     throw new Error('Bot token is not defined');
@@ -51,7 +51,7 @@ function reportPage(url): Promise<string> {
     return launchChromeAndRunLighthouse(url, opts)
         .then((results: RootObject) => {
             const text = `
-                Page: ${results.requestedUrl} \r\n
+                Page: ${results.requestedUrl}
                 - performance: ${results.categories.performance.score * 100}%
                 - pwa: ${results.categories.pwa.score * 100}%
                 - accessibility: ${results.categories.accessibility.score * 100}%
@@ -74,6 +74,5 @@ timer(0, 60e3 * 60 * 12)
     )
     .subscribe((urls: string[]) => urls.forEach((url: string) => {
         reportPage(url)
-            .then(report => console.log(report))
-            // .then((report: string) => sendReport(report));
+            .then((report: string) => sendReport(report));
         }));
