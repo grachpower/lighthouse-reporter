@@ -1,7 +1,8 @@
 const path = require('path');
 
 module.exports = {
-    mode: 'production',
+    mode: 'development',
+    target: 'node',
     entry: {
         index: './src/index.ts',
     },
@@ -18,14 +19,5 @@ module.exports = {
             // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
             { test: /\.tsx?$/, loader: "ts-loader" }
         ]
-    },
-    node: {
-        fs: "empty",
-        child_process: 'empty',
-        process: false,
-        console: true,
-        net: 'empty',
-        tls: 'empty',
-        module: 'empty',
     },
 };

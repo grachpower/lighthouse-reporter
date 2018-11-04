@@ -6,7 +6,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "core-js": "^2.5.7",
-    "lighthouse": "^3.1.1",
+    "lighthouse": "^3.2.1",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.2",
     "ts-node": "^7.0.1",
@@ -22,7 +22,7 @@
     "lighthouse": "lighthouse",
     "rimraf": "rimraf",
     "clean:dist": "npm run rimraf -- dist",
-    "build": "npm run clean:dist && webpack --config webpack.config.js",
+    "build": "npm run clean:dist && tsc",
     "start": "ts-node ./src/index.ts"
   },
   "repository": {
@@ -30,7 +30,7 @@
     "url": "git+https://github.com/grachpower/lighthouse-reporter.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/grachpower/lighthouse-reporter/issues"
   },
