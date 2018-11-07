@@ -39,25 +39,25 @@ const opts = {
 
 const urls = [
     'https://www.clouty.ru/',
-    // 'https://www.clouty.ru/trends',
-    // 'https://www.clouty.ru/shop/women',
-    // 'https://www.clouty.ru/product-collections',
-    // 'https://www.clouty.ru/sales',
-    // 'https://www.clouty.ru/looks',
-    // 'https://www.clouty.ru/partners',
-    // 'https://www.clouty.ru/community',
+    'https://www.clouty.ru/trends',
+    'https://www.clouty.ru/shop/women',
+    'https://www.clouty.ru/product-collections',
+    'https://www.clouty.ru/sales',
+    'https://www.clouty.ru/looks',
+    'https://www.clouty.ru/partners',
+    'https://www.clouty.ru/community',
 ];
 
 function reportPage(url): Promise<string> {
     return launchChromeAndRunLighthouse(url, opts)
         .then((results: RootObject) => {
             const text = `
-                Page: \`${results.requestedUrl}\`
-                - performance: ${Math.round(results.categories.performance.score * 100)}%
-                - pwa: ${Math.round(results.categories.pwa.score * 100)}%
-                - accessibility: ${Math.round(results.categories.accessibility.score * 100)}%
-                - seo: ${Math.round(results.categories.seo.score * 100)}%
-                - best-practice: ${Math.round(results.categories['best-practices'].score * 100)}%
+Page: \`${results.requestedUrl}\`
+- performance: ${Math.round(results.categories.performance.score * 100)}%
+- pwa: ${Math.round(results.categories.pwa.score * 100)}%
+- accessibility: ${Math.round(results.categories.accessibility.score * 100)}%
+- seo: ${Math.round(results.categories.seo.score * 100)}%
+- best-practice: ${Math.round(results.categories['best-practices'].score * 100)}%
             `;
 
             return text;
@@ -69,11 +69,26 @@ function sendReport(reportText: string): void {
         .subscribe(() => console.log('report was sent'));
 }
 
+function createReports(urls: string[], index: number = 0, reports: string[] = []): Promise<string> {
+    if (!urls.length) {
+        return;
+    }
+
+    if (urls.length === index) {
+        return Promise.resolve(reports.join(`\r\n`));
+    }
+
+    return reportPage(urls[index])
+        .then((report: string) => {
+            return createReports(urls, index + 1, [...reports, report]);
+        })
+}
+
 timer(0, 60e3 * 60 * 12)
     .pipe(
         mapTo(urls),
     )
-    .subscribe((urls: string[]) => urls.forEach((url: string) => {
-        reportPage(url)
+    .subscribe((urls: string[]) => {
+        createReports(urls)
             .then((report: string) => sendReport(report));
-        }));
+    });
