@@ -10,3 +10,9 @@ services:
       - .env
     ports:
       - '3333:3333'
+    networks:
+      - lighthouse-network
+
+networks:
+  lighthouse-network:
+    driver: bridge
