@@ -1,9 +1,9 @@
-import {Observable, of, throwError} from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { Http } from '../request/request';
 import {catchError} from "rxjs/operators";
 
 export class TelegaApi {
-    private readonly baseApi: string = `https://api.telegram.org/bot${this.botToken}/`;
+    private readonly baseApi: string = `https://api.telegram.org:443/bot${this.botToken}/`;
 
         constructor(
         private chatId: string,

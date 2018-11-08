@@ -40,12 +40,12 @@ const opts = {
 const urls = [
     'https://www.clouty.ru/',
     'https://www.clouty.ru/trends',
-    'https://www.clouty.ru/shop/women',
-    'https://www.clouty.ru/product-collections',
-    'https://www.clouty.ru/sales',
-    'https://www.clouty.ru/looks',
-    'https://www.clouty.ru/partners',
-    'https://www.clouty.ru/community',
+    // 'https://www.clouty.ru/shop/women',
+    // 'https://www.clouty.ru/product-collections',
+    // 'https://www.clouty.ru/sales',
+    // 'https://www.clouty.ru/looks',
+    // 'https://www.clouty.ru/partners',
+    // 'https://www.clouty.ru/community',
 ];
 
 function reportPage(url): Promise<string> {
