@@ -18,6 +18,3 @@ docker build -f "$1.Dockerfile" -t "${DOCKER_REGISTRY}${name}:$hash" -t "${DOCKE
 docker push "${DOCKER_REGISTRY}${name}:previous";
 docker push "${DOCKER_REGISTRY}${name}:$hash";
 docker push "${DOCKER_REGISTRY}${name}:latest";
-~
-~
-~
