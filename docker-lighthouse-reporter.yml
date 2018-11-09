@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  lighthouse-reporter:
+    image: ${DOCKER_REGISTRY}lighthouse-reporter:latest
+    restart: always
+    env_file:
+    - .env
+    #    environment:
+    #      - HTTPS_PROXY=http://194.87.109.197:3128
+    #      - HTTP_PROXY=http://194.87.109.197:3128
+    ports:
+    - '3333:3333'
+    networks:
+    - proxy_common-net
+    deploy:
+      placement:
+        constraints:
+        - node.role == manager
+        - node.labels.type == web
+
+networks:
+  proxy_common-net:
+    external: true
