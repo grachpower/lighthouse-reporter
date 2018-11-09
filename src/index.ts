@@ -54,12 +54,14 @@ function reportPage(url): Promise<Object> {
 }
 
 function sendReport(pagesReports: []): void {
-    const log = {
-        logSource: 'lighthouse-report',
-        pages: pagesReports
-    };
+    pagesReports.forEach((pageReport: {}) => {
+        const log = {
+            logSource: 'lighthouse-report',
+            ...pageReport,
+        };
 
-    console.log(JSON.stringify(log));
+        console.log(JSON.stringify(log));
+    });
 }
 
 function createReports(urls: string[], index: number = 0, reports: [] = []): Promise<[]> {
