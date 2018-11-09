@@ -33,17 +33,10 @@ export interface RequestParams {
 
 export interface Response<T = any> extends AxiosResponse { }
 
-const agent = tunnel.httpsOverHttp({
-    proxy: {
-        host: '194.87.109.197',
-        port: 3128,
-    },
-});
-
 export class Http {
     public static get<T>(request: string, params: RequestParams = {}): Observable<T> {
         return Observable.create((observer: Observer<Response<T>>) => {
-            axios.get<T>(request, {...params, httpsAgent: agent})
+            axios.get<T>(request, params)
             .then((response: Response) => {
                 observer.next(response.data);
                 observer.complete();
@@ -57,7 +50,7 @@ export class Http {
 
     public static post<T>(request: string, data, params: any = {}): Observable<T> {
         return Observable.create((observer: Observer<Response<T>>) => {
-            axios.post<T>(request, {...params, httpsAgent: agent})
+            axios.post<T>(request, params)
             .then((response: Response) => {
                 observer.next(response.data);
                 observer.complete();
@@ -71,7 +64,7 @@ export class Http {
 
     public static delete<T>(request: string, params: any = {}): Observable<T> {
         return Observable.create((observer: Observer<Response<T>>) => {
-            axios.delete(request, {...params, httpsAgent: agent})
+            axios.delete(request, params)
             .then((response: Response) => {
                 observer.next(response.data);
                 observer.complete();
@@ -85,7 +78,7 @@ export class Http {
 
     public static put<T>(request: string, params: any = {}): Observable<T> {
         return Observable.create((observer: Observer<Response<T>>) => {
-            axios.put<T>(request, {...params, httpsAgent: agent})
+            axios.put<T>(request, params)
             .then((response: Response) => {
                 observer.next(response.data);
                 observer.complete();
@@ -99,7 +92,7 @@ export class Http {
 
     public static patch<T>(request: string, params: any = {}): Observable<T> {
         return Observable.create((observer: Observer<Response<T>>) => {
-            axios.patch<T>(request, {...params, httpsAgent: agent})
+            axios.patch<T>(request, params)
             .then((response: Response) => {
                 observer.next(response.data);
                 observer.complete();

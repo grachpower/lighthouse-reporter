@@ -1,23 +1,9 @@
-import { timer } from "rxjs";
-import { mapTo } from "rxjs/operators";
+import {timer} from "rxjs";
+import {mapTo} from "rxjs/operators";
 import * as lighthouse from 'lighthouse';
-import * as chromeLauncher from 'chrome-launcher'; 
+import * as chromeLauncher from 'chrome-launcher';
 
-import { TelegaApi } from "./telegram-api/telegram-api";
-import { RootObject } from './page-data.interface';
-
-const botToken = process.env.BOT_TOKEN || '703115978:AAHWLBCYosX2CpFqtrMhTFiwgru2ZEFDEGM';
-const chatId = process.env.CHAT_ID || '-287003245';
-
-if (!botToken) {
-    throw new Error('Bot token is not defined');
-}
-
-if (!chatId) {
-    throw new Error('Chat id is not defined');
-}
-
-const telegaApi = new TelegaApi(chatId, botToken);
+import {RootObject} from './page-data.interface';
 
 function launchChromeAndRunLighthouse(url, opts, config = null): Promise<RootObject> {
     return chromeLauncher.launch({chromeFlags: opts.chromeFlags}).then(chrome => {
@@ -40,55 +26,62 @@ const opts = {
 const urls = [
     'https://www.clouty.ru/',
     'https://www.clouty.ru/trends',
-    'https://www.clouty.ru/shop/women',
-    'https://www.clouty.ru/product-collections',
-    'https://www.clouty.ru/sales',
-    'https://www.clouty.ru/looks',
-    'https://www.clouty.ru/partners',
-    'https://www.clouty.ru/community',
+    // 'https://www.clouty.ru/shop/women',
+    // 'https://www.clouty.ru/product-collections',
+    // 'https://www.clouty.ru/sales',
+    // 'https://www.clouty.ru/looks',
+    // 'https://www.clouty.ru/partners',
+    // 'https://www.clouty.ru/community',
 ];
 
-function reportPage(url): Promise<string> {
+function reportPage(url): Promise<Object> {
     return launchChromeAndRunLighthouse(url, opts)
         .then((results: RootObject) => {
-            const text = `
-Page: \`${results.requestedUrl}\`
-- performance: ${Math.round(results.categories.performance.score * 100)}%
-- pwa: ${Math.round(results.categories.pwa.score * 100)}%
-- accessibility: ${Math.round(results.categories.accessibility.score * 100)}%
-- seo: ${Math.round(results.categories.seo.score * 100)}%
-- best-practice: ${Math.round(results.categories['best-practices'].score * 100)}%
-            `;
+            const result = {
+                page: results.requestedUrl,
+                performance: Math.round(results.categories.performance.score * 100),
+                pwa: Math.round(results.categories.pwa.score * 100),
+                accessibility: Math.round(results.categories.accessibility.score * 100),
+                seo: Math.round(results.categories.seo.score * 100),
+                bestPractice: Math.round(results.categories['best-practices'].score * 100),
+                firstContentfulPaint: Math.round(results.audits['first-contentful-paint'].score * 100),
+                timeToFirstByte: Math.round(results.audits['time-to-first-byte'].score * 100),
+                firstMeaningfulPaint: Math.round(results.audits['first-meaningful-paint'].score * 100),
+            };
 
-            return text;
+            return result;
         });
 }
 
-function sendReport(reportText: string): void {
-    telegaApi.sendMessageToChat(reportText)
-        .subscribe(() => console.log('report was sent'));
+function sendReport(pagesReports: []): void {
+    const log = {
+        logSource: 'lighthouse-report',
+        pages: pagesReports
+    };
+
+    console.log(JSON.stringify(log));
 }
 
-function createReports(urls: string[], index: number = 0, reports: string[] = []): Promise<string> {
+function createReports(urls: string[], index: number = 0, reports: [] = []): Promise<[]> {
     if (!urls.length) {
         return;
     }
 
     if (urls.length === index) {
-        return Promise.resolve(reports.join(`\r\n`));
+        return Promise.resolve(reports);
     }
 
     return reportPage(urls[index])
-        .then((report: string) => {
-            return createReports(urls, index + 1, [...reports, report]);
+        .then((report) => {
+            return createReports(urls, index + 1, [...reports, report] as any);
         })
 }
 
-timer(0, 60e3 * 60 * 12)
+timer(0, 60e3 * 60) // 60 minutes
     .pipe(
         mapTo(urls),
     )
     .subscribe((urls: string[]) => {
         createReports(urls)
-            .then((report: string) => sendReport(report));
+            .then((pageReports: []) => sendReport(pageReports));
     });
