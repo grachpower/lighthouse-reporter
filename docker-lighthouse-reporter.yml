@@ -16,8 +16,9 @@ services:
     deploy:
       placement:
         constraints:
-        - node.role == manager
-        - node.labels.type == web
+#        - node.role == manager
+#        - node.labels.type == web
+        - node.labels.role == elk
 
 networks:
   proxy_common-net:
