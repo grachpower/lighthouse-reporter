@@ -6,8 +6,8 @@ import * as chromeLauncher from 'chrome-launcher';
 import { TelegaApi } from "./telegram-api/telegram-api";
 import { RootObject } from './page-data.interface';
 
-const botToken = process.env.BOT_TOKEN || '703115978:AAHWLBCYosX2CpFqtrMhTFiwgru2ZEFDEGM';
-const chatId = process.env.CHAT_ID || '-287003245';
+const botToken = process.env.BOT_TOKEN;
+const chatId = process.env.CHAT_ID;
 
 if (!botToken) {
     throw new Error('Bot token is not defined');
@@ -38,14 +38,7 @@ const opts = {
 };
 
 const urls = [
-    'https://www.clouty.ru/',
-    'https://www.clouty.ru/trends',
-    'https://www.clouty.ru/shop/women',
-    'https://www.clouty.ru/product-collections',
-    'https://www.clouty.ru/sales',
-    'https://www.clouty.ru/looks',
-    'https://www.clouty.ru/partners',
-    'https://www.clouty.ru/community',
+    // pages
 ];
 
 function reportPage(url): Promise<string> {
