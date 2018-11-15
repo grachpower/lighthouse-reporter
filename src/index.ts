@@ -32,6 +32,7 @@ const urls = [
     'https://www.clouty.ru/looks',
     'https://www.clouty.ru/partners',
     'https://www.clouty.ru/community',
+    'https://www.clouty.ru/shop-item/9cedcb77-e064-40a5-9765-1e79152d83bc/jackets-zhaket-emporio-armani',
 ];
 
 function reportPage(url): Promise<Object> {
@@ -46,7 +47,16 @@ function reportPage(url): Promise<Object> {
                 bestPractice: Math.round(results.categories['best-practices'].score * 100),
                 firstContentfulPaint: Math.round(results.audits['first-contentful-paint'].score * 100),
                 timeToFirstByte: Math.round(results.audits['time-to-first-byte'].score * 100),
-                firstMeaningfulPaint: Math.round(results.audits['first-meaningful-paint'].score * 100),
+                firstMeaningfulPaint: Math.round(results.audits['first-meaningful-paint'].score * 100),       
+                speedIndex: Math.round(results.audits['speed-index'].score * 100), 
+                firstCPUIdle: Math.round(results.audits['first-cpu-idle'].score * 100), 
+                estimatedInputLatency: Math.round(results.audits['estimated-input-latency'].score * 100),    
+                firstContentfulPaintRaw: Math.round(results.audits['first-contentful-paint'].rawValue),
+                timeToFirstByteRaw: Math.round(results.audits['time-to-first-byte'].rawValue),
+                firstMeaningfulPaintRaw: Math.round(results.audits['first-meaningful-paint'].rawValue),       
+                speedIndexRaw: Math.round(results.audits['speed-index'].rawValue), 
+                firstCPUIdleRaw: Math.round(results.audits['first-cpu-idle'].rawValue), 
+                estimatedInputLatencyRaw: Math.round(results.audits['estimated-input-latency'].rawValue),
             };
 
             return result;
