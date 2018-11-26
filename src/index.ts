@@ -80,7 +80,7 @@ function writeResultsToFile(url: string, results: RootObject): void {
     try {
         fs.mkdirSync(dirName);
     } catch {}
-    fs.writeFile(fileName, results, {flag: 'w'}, (err) => {
+    fs.writeFile(fileName, JSON.stringify(results), {flag: 'w'}, (err) => {
         err
             ? console.error(`Failed to write to "${fileName}": ${err}`)
             : console.log(`Generated report at "${fileName}"`);
