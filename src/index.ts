@@ -1,7 +1,9 @@
-import {timer} from "rxjs";
+import {timer, of} from "rxjs";
 import {mapTo} from "rxjs/operators";
 import * as lighthouse from 'lighthouse';
 import * as chromeLauncher from 'chrome-launcher';
+const fs = require('fs');
+import { URL } from 'url';
 
 import {RootObject} from './page-data.interface';
 
@@ -59,8 +61,30 @@ function reportPage(url): Promise<Object> {
                 estimatedInputLatencyRaw: Math.round(results.audits['estimated-input-latency'].rawValue),
             };
 
+            if (process.env.MODE === 'dev') {
+                writeResultsToFile(url, results)
+            }
+
             return result;
         });
+}
+
+function writeResultsToFile(url: string, results: RootObject): void {
+    const urlObject = new URL(url);
+    const path = urlObject.pathname
+        .split('/')
+        .filter(Boolean)
+        .join('-');
+    const dirName = 'reports';
+    const fileName = `${dirName}/report-${path || 'root'}.json`;
+    try {
+        fs.mkdirSync(dirName);
+    } catch {}
+    fs.writeFile(fileName, JSON.stringify(results), {flag: 'w'}, (err) => {
+        err
+            ? console.error(`Failed to write to "${fileName}": ${err}`)
+            : console.log(`Generated report at "${fileName}"`);
+    });
 }
 
 function sendReport(pagesReports: []): void {
@@ -70,7 +94,9 @@ function sendReport(pagesReports: []): void {
             ...pageReport,
         };
 
-        console.log(JSON.stringify(log));
+        if (process.env.MODE !== 'dev') {
+            console.log(JSON.stringify(log));
+        }
     });
 }
 
@@ -89,7 +115,11 @@ function createReports(urls: string[], index: number = 0, reports: [] = []): Pro
         })
 }
 
-timer(0, 60e3 * 60) // 60 minutes
+const scheduler = process.env.MODE === 'dev'
+    ? of(1)
+    : timer(0, 60e3 * 60); // 60 minutes
+
+scheduler
     .pipe(
         mapTo(urls),
     )
