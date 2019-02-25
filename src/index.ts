@@ -59,6 +59,7 @@ function reportPage(url): Promise<Object> {
                 speedIndexRaw: Math.round(results.audits['speed-index'].rawValue), 
                 firstCPUIdleRaw: Math.round(results.audits['first-cpu-idle'].rawValue), 
                 estimatedInputLatencyRaw: Math.round(results.audits['estimated-input-latency'].rawValue),
+                nodes: results.audits['dom-size'].rawValue,
             };
 
             if (process.env.MODE === 'dev') {
