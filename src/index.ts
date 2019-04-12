@@ -27,8 +27,8 @@ const opts = {
 
 const urls = [
     'https://www.clouty.ru/',
-    'https://www.clouty.ru/trends',
-    'https://www.clouty.ru/shop/women',
+    'https://www.clouty.ru/shop-trends/women-knitwear-sale',
+    'https://www.clouty.ru/catalog/women-clothing',
     'https://www.clouty.ru/product-collections',
     'https://www.clouty.ru/sales',
     'https://www.clouty.ru/looks',
