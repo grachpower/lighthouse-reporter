@@ -26,6 +26,7 @@
     "clean:dist": "npm run rimraf -- dist",
     "build": "npm run clean:dist && tsc",
     "start": "ts-node ./src/index.ts",
+    "start:pagespeed": "ts-node ./src/pagespeed.ts",
     "start:dev": "cross-env MODE=\"dev\" npm run start"
   },
   "repository": {
